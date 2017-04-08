@@ -1,5 +1,6 @@
 package widget;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -20,7 +21,6 @@ import android.view.animation.LinearInterpolator;
  * Description: 饼状图
  */
 public class PieView extends View {
-
 
     /**画笔工具*/
     private Paint mPaint = null;
@@ -68,6 +68,8 @@ public class PieView extends View {
     /**当前的角度*/
     private float mCurrentSweepAngle = 0.0f;
 
+    private OnAnimationListener mAnimationListener = null;
+
     public PieView(Context context) {
         this(context,null);
     }
@@ -86,6 +88,9 @@ public class PieView extends View {
             if(isHasData){
                 float drawStartAngle = 0.0f;
                 float drawSweepAngle = 0.0f;
+                if(mData == null){
+                    return ;
+                }
                 for (int i = 0; i < mData.length; i++) {
                     if(mCurrentSweepAngle > mStartAngles[i] && mCurrentSweepAngle <= mStartAngles[i] + mSweepAngles[i]){
                         mPaint.setColor(mColors[i]);
@@ -101,8 +106,7 @@ public class PieView extends View {
                 MYCanvas.drawArc(mRectF,drawStartAngle,drawSweepAngle,isCircle,mPaint);
                 MYCanvas.save();
                 MYCanvas.restore();
-            }
-            else {
+            } else {
                 mCanvas.translate(centerPoint[0],centerPoint[1]);
                 mCanvas.rotate(-90);
                 mPaint.setColor(Color.parseColor("#EFEFEF"));
@@ -118,11 +122,11 @@ public class PieView extends View {
         centerPoint = new int[]{
                 w/2,h/2
         };
-        int RectWidth = Math.min(w,h) -60;
+        int RectWidth = Math.min(w,h) -70;
         //计算出饼状图的外包正方形的区域
         mRectF = new RectF(- RectWidth/2, - RectWidth/2, RectWidth/2 , RectWidth/2);
         if(isFirstLoad){
-            mBitmap = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
+            mBitmap = Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);
             mSrc = new Rect(0,0, mBitmap.getWidth(), mBitmap.getHeight());
             mDst = new Rect(0 - centerPoint[0],0 - centerPoint[1] , centerPoint[0],centerPoint[1] );
             MYCanvas = new Canvas(mBitmap);
@@ -193,7 +197,7 @@ public class PieView extends View {
         AnimatorSet set = new AnimatorSet();
         ObjectAnimator[] animators = new ObjectAnimator[mData.length];
         for (int i = 0; i < mData.length ; i++) {
-            animators[i] = ObjectAnimator.ofFloat(this,VALUE_ANGLE, mStartAngles[i], mStartAngles[i] + mSweepAngles[i]).setDuration((long) mAnimateTimes[i]);
+            animators[i] =ObjectAnimator.ofFloat(this,VALUE_ANGLE, mStartAngles[i], mStartAngles[i] + mSweepAngles[i]).setDuration((long) mAnimateTimes[i]);
             animators[i].setInterpolator(new LinearInterpolator());
         }
         for (int i = 0; i < mData.length; i++) {
@@ -203,6 +207,26 @@ public class PieView extends View {
             else{
                 set.play(animators[i]).before(animators[i+1]);
             }
+        }
+        if(mAnimationListener != null){
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    mAnimationListener.onAnimationEnd();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+                }
+            });
         }
         set.start();
     }
@@ -301,4 +325,23 @@ public class PieView extends View {
         return (int) (dp * scale + 0.5f);
     }
 
+    public void resetCanvasState(){
+        if(!isFirstLoad){
+            mBitmap = Bitmap.createBitmap(mBitmap.getWidth(),mBitmap.getHeight(),Bitmap.Config.ARGB_8888);
+            MYCanvas.setBitmap(mBitmap);
+            mCurrentSweepAngle = 0.0f;
+            mSweepAngles = null;
+            mStartAngles = null;
+            mData = null;
+            invalidate();
+        }
+    }
+
+    public void setAnimationListener(OnAnimationListener mAnimationListener) {
+        this.mAnimationListener = mAnimationListener;
+    }
+
+    public interface OnAnimationListener{
+        void onAnimationEnd();
+    }
 }

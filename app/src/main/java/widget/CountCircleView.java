@@ -68,10 +68,10 @@ public class CountCircleView extends View {
     private void init(Context context , AttributeSet attrs, int defStyleAttr){
         TypedArray t = null;
         try {
-            t = context.obtainStyledAttributes(attrs, R.styleable.CountCircleView,
+            t = context.obtainStyledAttributes(attrs, R.styleable.LogicCountView,
                     0, defStyleAttr);
-            mPaintColor = t.getColor(R.styleable.CountCircleView_paintColor,mPaintColor);
-            mPiantSize = t.getDimension(R.styleable.CountCircleView_paintSize,mPiantSize);
+            mPaintColor = t.getColor(R.styleable.LogicCountView_paintColor,mPaintColor);
+            mPiantSize = t.getDimension(R.styleable.LogicCountView_paintSize,mPiantSize);
         } finally {
             if (t != null) {
                 t.recycle();

@@ -2,6 +2,7 @@ package widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -23,15 +24,21 @@ public class CountView extends RelativeLayout {
 
     private RelativeLayout mRlayout = null;
 
-    private CountCircleView mCountCircleView = null;
-
     private TextView mCountTimeTxt = null;
+
+    private LogicCountView mLCView;
 
     private Context mCot = null;
 
     private CountDownTimerUtil timerUtil = null;
 
     private OnCountFinshListener mCountFinishListener = null;
+
+    private OnTickListener mOnTickListener = null;
+
+    private int mTick = 0;
+
+    private int mResumeTime = 0;
 
     public CountView(Context context) {
         super(context);
@@ -54,8 +61,8 @@ public class CountView extends RelativeLayout {
     private void init(){
         View view = LayoutInflater.from(mCot).inflate(R.layout.layout_count_circle,this);
         mRlayout = (RelativeLayout) view.findViewById(R.id.rl_rootLayout);
-        mCountCircleView = (CountCircleView) view.findViewById(R.id.view_count_circle);
         mCountTimeTxt = (TextView) view.findViewById(R.id.tv_count_timer);
+        mLCView = (LogicCountView) view.findViewById(R.id.view_count_circle);
     }
 
     @Override
@@ -67,40 +74,56 @@ public class CountView extends RelativeLayout {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-            mRlayout.layout(0,0,mRlayout.getMeasuredWidth(),mRlayout.getMeasuredHeight());
+        mRlayout.layout(0,0,mRlayout.getMeasuredWidth(),mRlayout.getMeasuredHeight());
     }
 
-    public void countTime(int second){
-        if(mCountCircleView != null){
-            mCountCircleView.setmCount(second);
-        }
+    public void countTime(final int second){
         timerUtil = new CountDownTimerUtil(second*1000,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mCountTimeTxt.setText(String.valueOf(millisUntilFinished / 1000));
-                mCountCircleView.startAnimation();
+                if(mTick == 3){
+                    mCountTimeTxt.setText("2/3");
+                    mOnTickListener.onTick(mTick);
+                } else if(mTick == 6){
+                    mCountTimeTxt.setText("3/3");
+                    mOnTickListener.onTick(mTick);
+                    Log.i("ResumeTime","resumeTime : " + mResumeTime);
+                    mLCView.resetAnimation(new Animation7_15());
+                }
+                ++ mTick;
+                mResumeTime-- ;
             }
 
             @Override
             public void onFinish() {
-                mCountTimeTxt.setText("0");
-                mCountCircleView.startAnimation();
-                if(mCountFinishListener != null){
-                    mCountFinishListener.onFinish();
-                }
+                mCountFinishListener.onFinish();
+                Log.i("ResumeTime","resumeTime : " + mResumeTime);
+                mOnTickListener.onTick(second);
             }
         };
+        mResumeTime = second;
+        mLCView.setmResumeTime(mResumeTime);
         timerUtil.start();
+        mLCView.resetAnimation(new Animation1_3());
     }
 
     public void cancelCount(){
         if(timerUtil != null){
             timerUtil.cancel();
+            mLCView.resetAnimation(new AnimationFinal());
         }
     }
 
     public void setmCountFinishListener(OnCountFinshListener mCountFinishListener) {
         this.mCountFinishListener = mCountFinishListener;
+    }
+
+    public void setOnTickListener(OnTickListener mOnTickListener){
+        this.mOnTickListener = mOnTickListener;
+    }
+
+    public interface OnTickListener{
+        void onTick(int tick);
     }
 
     public interface OnCountFinshListener{

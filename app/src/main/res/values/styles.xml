@@ -8,10 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <declare-styleable name="CountCircleView">
+    <declare-styleable name="LogicCountView">
         <attr name="paintColor" format="color"/>
         <attr name="paintSize" format="dimension"/>
-        <attr name="paintTextColor" format="color"/>
-        <attr name="paintTextSize" format="dimension"/>
     </declare-styleable>
 </resources>
