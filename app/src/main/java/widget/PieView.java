@@ -1,7 +1,6 @@
 package widget;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,7 +11,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 
 /**
  * Title: PanelView
@@ -50,8 +48,6 @@ public class PieView extends View {
     private float[] mSweepAngles = null;
     private float[] mStartAngles = null;
 
-    private float[] mAnimateTimes = null;
-
     /**绘制时需要测量的数据值*/
     RectF mRectF = null;
 
@@ -83,33 +79,39 @@ public class PieView extends View {
 
     @Override
     protected void onDraw(Canvas mCanvas) {
+        super.onDraw(mCanvas);
         if(mCanvas != null && mPaint != null){
             if(isHasData){
-                float drawStartAngle ;
-                float drawSweepAngle ;
+                mCanvas.translate(centerPoint[0],centerPoint[1]);
+                mCanvas.rotate(-90);
+                float drawStartAngle;
+                float drawSweepAngle;
+                mCanvas.drawBitmap(mBitmap, mSrc, mDst,mPaint);
                 if(mData == null){
                     return ;
                 }
-                mCanvas.translate(centerPoint[0],centerPoint[1]);
-                mCanvas.rotate(-90);
                 for (int i = 0; i < mData.length; i++) {
-                    if(mCurrentSweepAngle <= mStartAngles[i] + mSweepAngles[i]){
+                    if (mSweepAngles[i] != 0) {
                         mPaint.setColor(mColors[i]);
                         drawStartAngle = mStartAngles[i];
-                        drawSweepAngle = mCurrentSweepAngle - mStartAngles[i] - 0.5f;
-                        mCanvas.drawArc(mRectF,drawStartAngle,drawSweepAngle,isCircle,mPaint);
-                        return ;
+                        drawSweepAngle = mSweepAngles[i];
+                        if (mCurrentSweepAngle <= drawStartAngle + drawSweepAngle-0.5f) {
+                            drawSweepAngle = mCurrentSweepAngle - drawStartAngle;
+                            mCanvas.drawArc(mRectF, drawStartAngle, drawSweepAngle, isCircle, mPaint);
+                            return;
+                        }
+                        mCanvas.drawArc(mRectF, drawStartAngle, drawSweepAngle-0.5f, isCircle, mPaint);
                     }
-                    mCanvas.drawArc(mRectF,mStartAngles[i],mSweepAngles[i],isCircle,mPaint);
                 }
-            } else {
+            }
+            else {
                 mCanvas.translate(centerPoint[0],centerPoint[1]);
                 mCanvas.rotate(-90);
                 mPaint.setColor(Color.parseColor("#EFEFEF"));
                 mCanvas.drawArc(mRectF,0,360.0f,isCircle,mPaint);
             }
         }
-        super.onDraw(mCanvas);
+
     }
 
     @Override
@@ -232,10 +234,8 @@ public class PieView extends View {
      * 设置绘制时圆的半径，中心点等数据
      * */
     private void calulateAnglesAndTimes(){
-
         mSweepAngles = new float[mData.length];
         mStartAngles = new float[mData.length];
-        mAnimateTimes = new float[mData.length];
         float[] currentData = new float[mData.length];
         float startAngle = 0;
         float dataAmount = 0;
@@ -286,16 +286,14 @@ public class PieView extends View {
                 sweepAngle = (360.0f - hasSweepAngle ) * currentData[i] / dataAmount;
             }
             mSweepAngles[i] = sweepAngle ;
-            mAnimateTimes[i] = sweepAngle / 360.0f * mAnimationTime;
-            if(i == 0){
+            if(i == 0 && sweepAngle != 0){
                 mStartAngles[i] = 0;
                 startAngle += sweepAngle ;
             }
-            else{
+            else if( sweepAngle != 0){
                 mStartAngles[i] = startAngle;
                 startAngle += sweepAngle ;
             }
-
             hasSweepAngle += sweepAngle ;
             dataAmount -= currentData[i];
         }
