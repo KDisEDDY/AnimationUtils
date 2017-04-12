@@ -24,7 +24,6 @@ public class PieView extends View {
 
     /**画笔工具*/
     private Paint mPaint = null;
-    private Canvas MYCanvas = null;
     /**保存绘制状态的变量*/
     private Bitmap mBitmap = null;
     private Rect mDst = null;
@@ -86,26 +85,23 @@ public class PieView extends View {
     protected void onDraw(Canvas mCanvas) {
         if(mCanvas != null && mPaint != null){
             if(isHasData){
-                float drawStartAngle = 0.0f;
-                float drawSweepAngle = 0.0f;
+                float drawStartAngle ;
+                float drawSweepAngle ;
                 if(mData == null){
                     return ;
                 }
+                mCanvas.translate(centerPoint[0],centerPoint[1]);
+                mCanvas.rotate(-90);
                 for (int i = 0; i < mData.length; i++) {
-                    if(mCurrentSweepAngle > mStartAngles[i] && mCurrentSweepAngle <= mStartAngles[i] + mSweepAngles[i]){
+                    if(mCurrentSweepAngle <= mStartAngles[i] + mSweepAngles[i]){
                         mPaint.setColor(mColors[i]);
                         drawStartAngle = mStartAngles[i];
                         drawSweepAngle = mCurrentSweepAngle - mStartAngles[i] - 0.5f;
+                        mCanvas.drawArc(mRectF,drawStartAngle,drawSweepAngle,isCircle,mPaint);
+                        return ;
                     }
+                    mCanvas.drawArc(mRectF,mStartAngles[i],mSweepAngles[i],isCircle,mPaint);
                 }
-                mCanvas.translate(centerPoint[0],centerPoint[1]);
-                mCanvas.rotate(-90);
-                mCanvas.drawBitmap(mBitmap, mSrc, mDst,mPaint);
-                mCanvas.drawArc(mRectF,drawStartAngle,drawSweepAngle,isCircle,mPaint);
-                //保存到自己的canvas里面
-                MYCanvas.drawArc(mRectF,drawStartAngle,drawSweepAngle,isCircle,mPaint);
-                MYCanvas.save();
-                MYCanvas.restore();
             } else {
                 mCanvas.translate(centerPoint[0],centerPoint[1]);
                 mCanvas.rotate(-90);
@@ -129,8 +125,6 @@ public class PieView extends View {
             mBitmap = Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);
             mSrc = new Rect(0,0, mBitmap.getWidth(), mBitmap.getHeight());
             mDst = new Rect(0 - centerPoint[0],0 - centerPoint[1] , centerPoint[0],centerPoint[1] );
-            MYCanvas = new Canvas(mBitmap);
-            MYCanvas.translate(centerPoint[0],centerPoint[1]);
             isFirstLoad = false;
         }
     }
@@ -194,22 +188,9 @@ public class PieView extends View {
      * 展示绘制动画
      */
     private void showAnimated(){
-        AnimatorSet set = new AnimatorSet();
-        ObjectAnimator[] animators = new ObjectAnimator[mData.length];
-        for (int i = 0; i < mData.length ; i++) {
-            animators[i] =ObjectAnimator.ofFloat(this,VALUE_ANGLE, mStartAngles[i], mStartAngles[i] + mSweepAngles[i]).setDuration((long) mAnimateTimes[i]);
-            animators[i].setInterpolator(new LinearInterpolator());
-        }
-        for (int i = 0; i < mData.length; i++) {
-            if(i == mData.length -1 ){
-                set.play(animators[i]);
-            }
-            else{
-                set.play(animators[i]).before(animators[i+1]);
-            }
-        }
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this,VALUE_ANGLE,0,360.0f).setDuration(mAnimationTime);
         if(mAnimationListener != null){
-            set.addListener(new Animator.AnimatorListener() {
+            objectAnimator.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
                 }
@@ -228,7 +209,7 @@ public class PieView extends View {
                 }
             });
         }
-        set.start();
+        objectAnimator.start();
     }
 
     /**
@@ -328,7 +309,6 @@ public class PieView extends View {
     public void resetCanvasState(){
         if(!isFirstLoad){
             mBitmap = Bitmap.createBitmap(mBitmap.getWidth(),mBitmap.getHeight(),Bitmap.Config.ARGB_8888);
-            MYCanvas.setBitmap(mBitmap);
             mCurrentSweepAngle = 0.0f;
             mSweepAngles = null;
             mStartAngles = null;

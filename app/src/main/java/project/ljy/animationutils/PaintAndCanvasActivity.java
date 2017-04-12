@@ -16,13 +16,13 @@ public class PaintAndCanvasActivity extends AppCompatActivity {
         setContentView(R.layout.activity_paint_and_canvas);
         init();
         float[] data = new float[]{
-             -778.0f,-746.67f,0.0f,4270.15f
+             50f,50f,0.0f,1f
         };
         int[] colors = new int[]{
                 Color.parseColor("#CCCCCC"), Color.parseColor("#555555"), Color.parseColor("#888888"),
                 Color.parseColor("#101010")
         };
-        mPieView.initPaint(false,18);
+        mPieView.initPaint(false,24);
         mPieView.setmAnimationTime(3000);
         mPieView.setAndCalculateData(data,colors);
         mPieView.show();

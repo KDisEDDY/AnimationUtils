@@ -6,8 +6,8 @@
 
     <widget.PieView
         android:id="@+id/pv_myview"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
         />
