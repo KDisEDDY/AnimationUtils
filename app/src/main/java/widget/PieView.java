@@ -3,7 +3,6 @@ package widget;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,7 +22,6 @@ public class PieView extends View {
     /**画笔工具*/
     private Paint mPaint = null;
     /**保存绘制状态的变量*/
-    private Bitmap mBitmap = null;
     private Rect mDst = null;
     private Rect mSrc = null;
     int[] centerPoint = null;
@@ -86,7 +84,6 @@ public class PieView extends View {
                 mCanvas.rotate(-90);
                 float drawStartAngle;
                 float drawSweepAngle;
-                mCanvas.drawBitmap(mBitmap, mSrc, mDst,mPaint);
                 if(mData == null){
                     return ;
                 }
@@ -124,8 +121,7 @@ public class PieView extends View {
         //计算出饼状图的外包正方形的区域
         mRectF = new RectF(- RectWidth/2, - RectWidth/2, RectWidth/2 , RectWidth/2);
         if(isFirstLoad){
-            mBitmap = Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);
-            mSrc = new Rect(0,0, mBitmap.getWidth(), mBitmap.getHeight());
+            mSrc = new Rect(0,0, w, h);
             mDst = new Rect(0 - centerPoint[0],0 - centerPoint[1] , centerPoint[0],centerPoint[1] );
             isFirstLoad = false;
         }
@@ -306,7 +302,6 @@ public class PieView extends View {
 
     public void resetCanvasState(){
         if(!isFirstLoad){
-            mBitmap = Bitmap.createBitmap(mBitmap.getWidth(),mBitmap.getHeight(),Bitmap.Config.ARGB_8888);
             mCurrentSweepAngle = 0.0f;
             mSweepAngles = null;
             mStartAngles = null;
