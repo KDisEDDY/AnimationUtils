@@ -4,6 +4,7 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -32,14 +33,17 @@
             android:name=".LoadingCircleActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait" />
-        <activity android:name=".RotationHeadPicActivity">
+        <activity
+            android:name=".RotationHeadPicActivity"
+            android:hardwareAccelerated="false">
         </activity>
-        <activity android:name=".OPT2Activity" />
-        <activity android:name=".SkewPicActivity">
+        <activity android:name=".OPT2Activity"></activity>
+        <activity android:name=".SkewPicActivity"></activity>
+        <activity android:name=".WaveActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+            <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>

@@ -52,10 +52,14 @@ public class BasePaintView extends View {
 
     public BasePaintView(Context context) {
         super(context);
+        mCot = context;
+        initPanelAndCanvas();
     }
 
     public BasePaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mCot = context;
+        initPanelAndCanvas();
     }
 
     public BasePaintView(Context context, AttributeSet attrs, int defStyleAttr) {

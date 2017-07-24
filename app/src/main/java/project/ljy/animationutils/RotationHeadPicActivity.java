@@ -12,20 +12,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import widget.CircleImageView;
 
 public class RotationHeadPicActivity extends AppCompatActivity {
 
-    CircleImageView mCircleImageView;
+    ImageView mCircleImageView;
     Button mToNextBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rotation_head_pic);
-        mCircleImageView = (CircleImageView) findViewById(R.id.civ_head_pic);
+        mCircleImageView = (ImageView) findViewById(R.id.civ_head_pic);
         mToNextBtn = (Button) findViewById(R.id.toNext);
         mToNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,6 +37,12 @@ public class RotationHeadPicActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_bottom,R.anim.slide_out_bottom);
             }
         });
+
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
         rotateyAnimRun2(mCircleImageView);
     }
 
@@ -43,17 +52,14 @@ public class RotationHeadPicActivity extends AppCompatActivity {
      */
     public void rotateyAnimRun(final View view)
     {
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(view, "rotationY", 0.0F,90.0F).setDuration(400);
-        final ObjectAnimator animator2 = ObjectAnimator.ofFloat(view, "rotationY", 90.0F,180.0F).setDuration(400);
-        final ObjectAnimator animator3 = ObjectAnimator.ofFloat(view,"rotationY", 0.0F,25.0F).setDuration(200);
-        animator3.setRepeatMode(ValueAnimator.REVERSE);
-        animator3.setRepeatCount(1);
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(view, "rotationX", 0.0F,90.0F).setDuration(400);
+        final ObjectAnimator animator2 = ObjectAnimator.ofFloat(view, "rotationX", 90.0F,180.0F).setDuration(400);
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playSequentially(animator1,animator2,animator3);
+        animatorSet.playSequentially(animator1,animator2);
         animator1.addListener(new AnimatorListenerAdapter(){
             @Override
             public void onAnimationEnd(Animator animation) {
-                CircleImageView circleImageView = (CircleImageView) view;
+                ImageView circleImageView = (ImageView) view;
                 circleImageView.setImageResource(R.mipmap.ic_launcher);
             }
         });
@@ -65,7 +71,7 @@ public class RotationHeadPicActivity extends AppCompatActivity {
      * @param view
      */
     public void rotateyAnimRun2(final View view){
-        final ObjectAnimator animator = ObjectAnimator.ofFloat(view,"rotationY",0.0F,180.0F).setDuration(800);
+        final ObjectAnimator animator = ObjectAnimator.ofFloat(view,"rotationX",0.0F,180.0F).setDuration(800);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
             boolean isSet = false;
             @Override
