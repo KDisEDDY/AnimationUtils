@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 
 import project.ljy.animationutils.R;
 
@@ -83,37 +84,18 @@ public class WaveView extends BasePaintView {
         mHeight = h;
         startPoint[0] = - mWaveLength;
         startPoint[1] = mHeight / 2;
-
-        mControlPoint1[0] = - mWaveLength *  3 / 4;
-        mControlPoint1[1] = mHeight * 5 / 8;
-        mPoint1[0] = -mWaveLength / 2;
-        mPoint1[1] = mHeight / 2;
-
-        mControlPoint2[0] = - mWaveLength / 4 ;
-        mControlPoint2[1] = mHeight * 3/ 8;
-        mPoint2[0] = 0;
-        mPoint2[1] = mHeight / 2;
-
-        mControlPoint3[0] = mWaveLength / 4 ;
-        mControlPoint3[1] = mHeight * 5/ 8;
-        mPoint3[0] = mWaveLength / 2;
-        mPoint3[1] = mHeight / 2;
-
-        mControlPoint4[0] = mWaveLength * 3/ 4 ;
-        mControlPoint4[1] = mHeight * 3 / 8;
-        mPoint4[0] = mWaveLength ;
-        mPoint4[1] = mHeight / 2;
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
-        mStartPointAnimator = ValueAnimator.ofInt(startPoint[0] , 0).setDuration(2000);
+        mStartPointAnimator = ValueAnimator.ofInt(0 , mWaveLength).setDuration(2000);
+        mStartPointAnimator.setInterpolator(new LinearInterpolator());
         mStartPointAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int moveX = (int)animation.getAnimatedValue();
-                startPoint[0] = moveX;
+                startPoint[0] = -mWaveLength + moveX;
                 startPoint[1] = mHeight / 2;
                 mControlPoint1[0] = - mWaveLength *  3 / 4 + moveX;
                 mControlPoint1[1] = mHeight * 5 / 8;
