@@ -1,11 +1,18 @@
 package widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.AttributeSet;
+
+import project.ljy.animationutils.R;
 
 
 /**
@@ -26,6 +33,7 @@ public class CanvasView extends BasePaintView {
     public static final int CODE_NORMALSTATE = 0;
     public static final int CODE_TRANSLATE = 1;
     public static final int CODE_SCALE = 2;
+    public static final int CODE_SHADER = 3;
 
     public CanvasView(Context context) {
         this(context,null);
@@ -71,6 +79,14 @@ public class CanvasView extends BasePaintView {
                 canvas.scale(0.5f,0.5f);                // 画布缩放
                 paint.setColor(Color.BLUE);            // 绘制蓝色矩形
                 canvas.drawRect(rectF,paint);
+                break;
+            case CODE_SHADER:
+                canvas.translate(getScreenSize()[0] / 2, getScreenSize()[1] / 2);
+                Bitmap img = BitmapFactory.decodeResource(getResources(), R.drawable.ic_face);
+                Shader shader = new BitmapShader(img,BitmapShader.TileMode.MIRROR,BitmapShader.TileMode.MIRROR);
+                paint.setShader(shader);
+                paint.setStrokeWidth(10);
+                canvas.drawCircle(rectF.centerX(),rectF.centerY(),getScreenSize()[0] / 4 ,paint);
                 break;
             default:
                 break;

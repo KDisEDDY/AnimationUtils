@@ -10,7 +10,7 @@ public class CanvasTestActivity extends AppCompatActivity {
 
     private CanvasView canvasView;
 
-    int functionCode = -1;
+    int functionCode = CanvasView.CODE_SHADER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +23,13 @@ public class CanvasTestActivity extends AppCompatActivity {
        if(functionCode == CanvasView.CODE_NORMALSTATE){
            functionCode = CanvasView.CODE_SCALE;
            canvasView.paint(functionCode);
-       }
-        else  if(functionCode == CanvasView.CODE_SCALE){
+       } else  if(functionCode == CanvasView.CODE_SCALE){
            functionCode = CanvasView.CODE_NORMALSTATE;
            canvasView.paint(functionCode);
-       }
-        else {
+       } else if(functionCode == CanvasView.CODE_SHADER){
+           functionCode = CanvasView.CODE_SHADER;
+           canvasView.paint(functionCode);
+       } else {
            functionCode = CanvasView.CODE_NORMALSTATE;
            canvasView.paint(functionCode);
        }

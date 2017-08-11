@@ -16,7 +16,13 @@
             android:name=".PaintAndCanvasActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait" />
-        <activity android:name=".CanvasTestActivity" />
+        <activity android:name=".CanvasTestActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".BaseActivity" />
         <activity
             android:name=".PictureActivity"
@@ -43,11 +49,6 @@
 
         </activity>
         <activity android:name=".IndicatorActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
