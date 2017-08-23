@@ -20,11 +20,12 @@ import android.widget.LinearLayout;
  * Version: 1.0
  */
 
-public class IndicatorView extends LinearLayout implements ViewPager.OnPageChangeListener,  View.OnAttachStateChangeListener  {
+public class IndicatorView extends View implements ViewPager.OnPageChangeListener,  View.OnAttachStateChangeListener  {
 
-    private Path mPath = null ;
     private int mWidth = 0;
     private int mHeight = 0;
+
+    private int mPointWidth = 0;
 
     private ViewPager mPager = null;
     private int mPageCount = 0;
@@ -35,23 +36,20 @@ public class IndicatorView extends LinearLayout implements ViewPager.OnPageChang
     private int previousState = 0;  //0：不移动；1：左滑；2：右滑
 
     private float[] fractions = null;
-    private PointView[] pointViews = null;
+    private Path[] mPointPaths = null;
     private boolean isAttachedToWindow;
 
 
     public IndicatorView(Context context) {
         super(context);
-        initPath();
     }
 
     public IndicatorView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initPath();
     }
 
     public IndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initPath();
     }
 
     @Override
@@ -60,24 +58,6 @@ public class IndicatorView extends LinearLayout implements ViewPager.OnPageChang
         for(int i = 0 ; i < fractions.length ; i++){
 
         }
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if(mWidth != 0 && mHeight != 0){
-            if(mPager != null){
-
-            }
-        }
-
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-
-
     }
 
     public void setPager(ViewPager mPager) {
@@ -98,23 +78,19 @@ public class IndicatorView extends LinearLayout implements ViewPager.OnPageChang
         requestLayout();
     }
 
-    private void initPath(){
-        mPath = new Path();
-    }
-
     private void initPointState(){
         currentPage = 0;
         previousPage = 0;
         fractions = new float[mPageCount];
-        pointViews = new PointView[mPageCount];
+        mPointPaths = new Path[mPageCount];
+        mPointWidth = mWidth / mPageCount;
         for(int i = 0 ; i < fractions.length ; i++){
             if(i == 0){
                 fractions[i] = 1f;
             } else {
                 fractions[i] = 0f;
             }
-            pointViews[i] = new PointView(getContext());
-            addView(pointViews[i]);
+            mPointPaths[i] = new Path();
         }
         measure(MeasureSpec.AT_MOST,MeasureSpec.AT_MOST);
         ViewCompat.postInvalidateOnAnimation(this);

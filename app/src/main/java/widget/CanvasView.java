@@ -34,6 +34,7 @@ public class CanvasView extends BasePaintView {
     public static final int CODE_TRANSLATE = 1;
     public static final int CODE_SCALE = 2;
     public static final int CODE_SHADER = 3;
+    public static final int CODE_COMPOSE_SHADER = 4;
 
     public CanvasView(Context context) {
         this(context,null);
@@ -87,6 +88,8 @@ public class CanvasView extends BasePaintView {
                 paint.setShader(shader);
                 paint.setStrokeWidth(10);
                 canvas.drawCircle(rectF.centerX(),rectF.centerY(),getScreenSize()[0] / 4 ,paint);
+                break;
+            case CODE_COMPOSE_SHADER:
                 break;
             default:
                 break;

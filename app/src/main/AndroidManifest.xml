@@ -16,12 +16,7 @@
             android:name=".PaintAndCanvasActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait" />
-        <activity android:name=".CanvasTestActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".CanvasTestActivity">
         </activity>
         <activity android:name=".BaseActivity" />
         <activity
@@ -41,14 +36,18 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".RotationHeadPicActivity"
-            android:hardwareAccelerated="false">
-        </activity>
-        <activity android:name=".OPT2Activity"></activity>
-        <activity android:name=".SkewPicActivity"></activity>
-        <activity android:name=".WaveActivity">
-
-        </activity>
+            android:hardwareAccelerated="false"></activity>
+        <activity android:name=".OPT2Activity" />
+        <activity android:name=".SkewPicActivity" />
+        <activity android:name=".WaveActivity"></activity>
         <activity android:name=".IndicatorActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".DemoActivity">
         </activity>
     </application>
 
