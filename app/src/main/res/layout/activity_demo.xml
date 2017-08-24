@@ -4,77 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="转让基准价"
+    <widget.PointView
+        android:layout_width="100dp"
+        android:layout_height="20dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
         />
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        >
-        <TextView
-            android:id="@+id/tv_min_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="最低价"
-            />
-        <TextView
-            android:id="@+id/tv_min_amount"
-            android:layout_below="@+id/tv_min_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="4dp"
-            android:text="最低价"
-            />
-        <TextView
-            android:id="@+id/tv_now_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="*截至今天的累计收益与本金之和"
-            />
-        <TextView
-            android:id="@+id/tv_now_amount"
-            android:layout_below="@+id/tv_now_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="4dp"
-            android:text="1000"
-            />
-        <TextView
-            android:id="@+id/tv_max_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="最高价"
-            />
-        <TextView
-            android:id="@+id/tv_max_amount"
-            android:layout_below="@+id/tv_max_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="4dp"
-            android:text="1000"
-            />
-        <widget.PointLineView
-            android:layout_below="@+id/tv_now_amount"
-            android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
-            android:layout_height="20dp"
-            />
-    </RelativeLayout>
 </LinearLayout>

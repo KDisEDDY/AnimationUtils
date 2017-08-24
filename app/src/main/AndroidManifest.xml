@@ -36,18 +36,19 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".RotationHeadPicActivity"
-            android:hardwareAccelerated="false"></activity>
+            android:hardwareAccelerated="false" />
         <activity android:name=".OPT2Activity" />
         <activity android:name=".SkewPicActivity" />
-        <activity android:name=".WaveActivity"></activity>
+        <activity android:name=".WaveActivity" />
         <activity android:name=".IndicatorActivity">
+
+        </activity>
+        <activity android:name=".DemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".DemoActivity">
         </activity>
     </application>
 

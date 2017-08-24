@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -20,7 +21,7 @@ import android.widget.LinearLayout;
  * Version: 1.0
  */
 
-public class IndicatorView extends View implements ViewPager.OnPageChangeListener,  View.OnAttachStateChangeListener  {
+public class IndicatorView extends BasePaintView implements ViewPager.OnPageChangeListener,  View.OnAttachStateChangeListener  {
 
     private int mWidth = 0;
     private int mHeight = 0;
@@ -37,6 +38,8 @@ public class IndicatorView extends View implements ViewPager.OnPageChangeListene
 
     private float[] fractions = null;
     private Path[] mPointPaths = null;
+    private RectF[] mRectFs = null;
+    private Path mCompletePath = null;
     private boolean isAttachedToWindow;
 
 
@@ -55,9 +58,17 @@ public class IndicatorView extends View implements ViewPager.OnPageChangeListene
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for(int i = 0 ; i < fractions.length ; i++){
-
+        if ( mPageCount == 0){
+            return;
         }
+        mCompletePath.rewind();
+        for(int i = 0 ; i < fractions.length ; i++){
+            mPointPaths[i].rewind();
+            mPointPaths[i].addRoundRect(mRectFs[i],mPointWidth / 4  , mHeight/4 , Path.Direction.CCW);
+            mCompletePath.addPath(mPointPaths[i]);
+        }
+
+        canvas.drawPath(mCompletePath,getmPaint());
     }
 
     public void setPager(ViewPager mPager) {
@@ -74,8 +85,6 @@ public class IndicatorView extends View implements ViewPager.OnPageChangeListene
 
     private void setPageCount(int pages) {
         mPageCount = pages;
-        initPointState();
-        requestLayout();
     }
 
     private void initPointState(){
@@ -83,16 +92,22 @@ public class IndicatorView extends View implements ViewPager.OnPageChangeListene
         previousPage = 0;
         fractions = new float[mPageCount];
         mPointPaths = new Path[mPageCount];
+        mRectFs = new RectF[mPageCount];
+        mCompletePath = new Path();
         mPointWidth = mWidth / mPageCount;
+        int pointX = 0;
+
         for(int i = 0 ; i < fractions.length ; i++){
+            //置第一个点为当前点
             if(i == 0){
                 fractions[i] = 1f;
             } else {
                 fractions[i] = 0f;
             }
             mPointPaths[i] = new Path();
+            mRectFs[i] = new RectF(pointX , 0, pointX + mPointWidth ,  mHeight / 4);
+            pointX = pointX + mPointWidth;
         }
-        measure(MeasureSpec.AT_MOST,MeasureSpec.AT_MOST);
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
@@ -101,6 +116,8 @@ public class IndicatorView extends View implements ViewPager.OnPageChangeListene
         super.onSizeChanged(w, h, oldw, oldh);
         mWidth = w;
         mHeight = h;
+        initPointState();
+        requestLayout();
     }
 
     @Override
@@ -185,6 +202,7 @@ public class IndicatorView extends View implements ViewPager.OnPageChangeListene
             }
 
             fractions[dot] = fraction;
+            ViewCompat.postInvalidateOnAnimation(this);
         }
     }
 

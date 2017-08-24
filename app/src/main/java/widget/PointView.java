@@ -52,7 +52,7 @@ public class PointView extends BasePaintView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mRectF = new RectF(0,0,w,h);
+        mRectF = new RectF( 0,0,w,h);
         mLeft = 0;
         mRight = w;
         mWidth = w;
@@ -71,7 +71,7 @@ public class PointView extends BasePaintView {
         } else if(mAnimPatton == RIGHT_SCALE){
 
         }
-        mPath.addRoundRect(mRectF,mWidth/4,mHeight, Direction.CW);
+        mPath.addRoundRect(mRectF,mWidth / 4 ,mHeight, Direction.CW);
         canvas.drawPath(mPath,getmPaint());
     }
 
