@@ -201,8 +201,9 @@ public class IndicatorView extends BasePaintView implements ViewPager.OnPageChan
         Log.i("offset",positionOffset + "");
         boolean lastoffset = false;
         int currentPosition = pageChanging ? previousPage : currentPage;
+        Log.i("pageChange" , "previousPage:" + previousPage + ",currentPage:" + currentPage);
         //规避掉左滑时最后一个positionOffset为0的情况
-        if(Math.abs(positionOffset - previousOffset) > 0.99 && previousOffset > 0.99){
+        if(Math.abs(positionOffset - previousOffset) > 0.8 && previousOffset > 0.9){
             positionOffset = 1f;
             lastoffset = true;
         }
@@ -211,6 +212,7 @@ public class IndicatorView extends BasePaintView implements ViewPager.OnPageChan
             previousOffset = 1f;
         }
         if(positionOffset - previousOffset > 0){
+            Log.i("offsetDis","" + (positionOffset - previousOffset));
             //左滑
             //根据position的左边的点判断之前的操作是否为右滑,规避掉currentPosition = 0 时的情况
             if(currentPosition - 1 != -1 && fractions[currentPosition - 1] > 0){
@@ -232,12 +234,18 @@ public class IndicatorView extends BasePaintView implements ViewPager.OnPageChan
             //右滑
             //根据position的右边的点判断之前的操作是否为左滑,规避掉currentPosition = pageCount 时的情况
             if(currentPosition + 1 < mPageCount && fractions[currentPosition + 1] > 0){
+                Log.i("previousFraction" , "3:preFraction:" + fractions[currentPosition + 1] + ", previousPos" + (currentPosition + 1));
                 setJoiningFraction(currentPosition ,1 - positionOffset);
                 setJoiningFraction(currentPosition + 1 , positionOffset);
+                Log.i("previousFraction","3:curFraction:" + fractions[currentPosition] + "," + "currentPos: " + currentPosition);
+                Log.i("previousFraction","3:PreFraction:" + fractions[currentPosition + 1] + "," + "previousPos: " + (currentPosition + 1));
                 Log.i("previousState" ,"previousState:" + 3);
                 previousState = 3;
             } else {
                 Log.i("joinFraction","currentPos:" + positionOffset + ",nextPos:" + (1- positionOffset));
+                if(positionOffset <= 0.25){
+                    positionOffset = 0f;
+                }
                 setJoiningFraction(currentPosition ,positionOffset);
                 setJoiningFraction(currentPosition - 1 , 1 - positionOffset);
                 Log.i("previousState" ,"previousState:" + 2);
@@ -270,9 +278,9 @@ public class IndicatorView extends BasePaintView implements ViewPager.OnPageChan
     @Override
     public void onPageScrollStateChanged(int state) {
         if(state == ViewPager.SCROLL_STATE_IDLE) {
-            pageChanging = false;
             Log.i("scrollState" , "state_idle");
         } else if(state == ViewPager.SCROLL_STATE_DRAGGING){
+            pageChanging = false;
             Log.i("scrollState" , "state_drag");
         } else if(state == ViewPager.SCROLL_STATE_SETTLING){
             Log.i("scrollState" , "state_settl");

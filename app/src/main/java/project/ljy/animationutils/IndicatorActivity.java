@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import widget.IndicatorView;
+import widget.MyPageIndicator;
 
 public class IndicatorActivity extends AppCompatActivity {
 
@@ -18,6 +19,7 @@ public class IndicatorActivity extends AppCompatActivity {
     private List<View> mList;
     private ViewPagerAdapter mAdapter;
     protected IndicatorView mIndicatorView;
+    private MyPageIndicator myPageIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,18 +32,19 @@ public class IndicatorActivity extends AppCompatActivity {
     private void initView() {
         mPager = (ViewPager) findViewById(R.id.vg_page);
         mIndicatorView = (IndicatorView) findViewById(R.id.view_indicator);
+        myPageIndicator = (MyPageIndicator) findViewById(R.id.view_my_indicator);
         mList = new ArrayList<>();
-        for(int i = 0 ; i < 4; i++){
+        for(int i = 0 ; i < 4 ; i++){
             View view = LayoutInflater.from(this).inflate(R.layout.layout_bg_item ,null);
             switch (i){
                 case 0:
                     ((ImageView)view.findViewById(R.id.iv_page)).setImageResource(R.drawable.ic_face);
                     break;
                 case 1:
-                    ((ImageView)view.findViewById(R.id.iv_page)).setImageResource(R.drawable.ic_face);
+                    ((ImageView)view.findViewById(R.id.iv_page)).setImageResource(R.mipmap.ic_launcher);
                     break;
                 case 2:
-                    ((ImageView)view.findViewById(R.id.iv_page)).setImageResource(R.mipmap.ic_launcher);
+                    ((ImageView)view.findViewById(R.id.iv_page)).setImageResource(R.drawable.ic_face);
                     break;
                 case 3:
                     ((ImageView)view.findViewById(R.id.iv_page)).setImageResource(R.mipmap.default_head);
@@ -54,5 +57,6 @@ public class IndicatorActivity extends AppCompatActivity {
         mAdapter = new ViewPagerAdapter(this,mList);
         mPager.setAdapter(mAdapter);
         mIndicatorView.setPager(mPager);
+        myPageIndicator.setViewPager(mPager);
     }
 }
