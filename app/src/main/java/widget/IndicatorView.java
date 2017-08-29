@@ -1,17 +1,16 @@
 package widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
+
+import project.ljy.animationutils.R;
 
 /**
  * Title: IndicatorView
@@ -21,12 +20,12 @@ import android.view.View;
  * Author: 刘加彦
  * Date: 2017/8/9
  * Version: 1.0
- * todo:onPageScrollStateChanged的值变化要关注
  */
 
 public class IndicatorView extends BasePaintView implements ViewPager.OnPageChangeListener {
 
-    private int mWidth = 0;
+    private static final int DEFAULT_DOT_SIZE = 8;                      // dp
+    private static final int DEFAULT_POINT_COLOR = R.color.colorAccent;
     private int mHeight = 0;
 
     private int mPointWidth = 0;
@@ -42,15 +41,26 @@ public class IndicatorView extends BasePaintView implements ViewPager.OnPageChan
     private Path mCompletePath = null;
 
     public IndicatorView(Context context) {
-        super(context);
+        this(context, null, 0);
     }
 
     public IndicatorView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public IndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initAttr(context,attrs,defStyleAttr);
+    }
+
+    private void initAttr(Context context, AttributeSet attrs,int defStyle){
+        float destiny = context.getResources().getDisplayMetrics().density;
+        final TypedArray a = getContext().obtainStyledAttributes(
+                attrs, R.styleable.IndicatorView, defStyle, 0);
+        mPointDiameter = a.getDimensionPixelSize(R.styleable.IndicatorView_pointDiameter,(int)(DEFAULT_DOT_SIZE * destiny * 0.5));
+        int color = a.getColor(R.styleable.IndicatorView_pointColor,getResources().getColor(DEFAULT_POINT_COLOR));
+        getmPaint().setColor(color);
+        a.recycle();
     }
 
     @Override
@@ -72,10 +82,57 @@ public class IndicatorView extends BasePaintView implements ViewPager.OnPageChan
             } else if(i == mLeftPosition + 1) {
                 mRectFs[i] = new RectF(mRectFs[i].right - width,mRectFs[i].top,mRectFs[i].right, mRectFs[i].bottom);
             }
-            mPointPaths[i].addRoundRect(mRectFs[i],mPointWidth / 4  , mHeight/4 , Path.Direction.CCW);
+            mPointPaths[i].addRoundRect(mRectFs[i],mPointWidth / 4  , mHeight , Path.Direction.CCW);
             mCompletePath.addPath(mPointPaths[i]);
         }
         canvas.drawPath(mCompletePath,getmPaint());
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        int desiredHeight = getDesiredHeight();
+        int height;
+        switch (MeasureSpec.getMode(heightMeasureSpec)) {
+            case MeasureSpec.EXACTLY:
+                height = MeasureSpec.getSize(heightMeasureSpec);
+                break;
+            case MeasureSpec.AT_MOST:
+                height = Math.min(desiredHeight, MeasureSpec.getSize(heightMeasureSpec));
+                break;
+            default: // MeasureSpec.UNSPECIFIED
+                height = desiredHeight;
+                break;
+        }
+
+        int desiredWidth = getDesiredWidth();
+        int width;
+        switch (MeasureSpec.getMode(widthMeasureSpec)) {
+            case MeasureSpec.EXACTLY:
+                width = MeasureSpec.getSize(widthMeasureSpec);
+                break;
+            case MeasureSpec.AT_MOST:
+                width = Math.min(desiredWidth, MeasureSpec.getSize(widthMeasureSpec));
+                break;
+            default: // MeasureSpec.UNSPECIFIED
+                width = desiredWidth;
+                break;
+        }
+        setMeasuredDimension(width, height);
+    }
+
+    private int getDesiredHeight() {
+        return getPaddingTop() + mPointDiameter + getPaddingBottom();
+    }
+
+    /** 单个点的最长宽度为点直径的4倍 */
+    private int getRequiredWidth() {
+        mPointWidth = mPointDiameter * 4;
+        return mPageCount * mPointWidth;
+    }
+
+    private int getDesiredWidth() {
+        return getPaddingLeft() + getRequiredWidth() + getPaddingRight();
     }
 
     public void setPager(ViewPager mPager) {
@@ -99,17 +156,15 @@ public class IndicatorView extends BasePaintView implements ViewPager.OnPageChan
         mPointPaths = new Path[mPageCount];
         mRectFs = new RectF[mPageCount];
         mCompletePath = new Path();
-        mPointWidth = mWidth / mPageCount;
         int pointRight = mPointWidth;
-        mPointDiameter = mPointWidth / 4;
         for(int i = 0 ; i < fractions.length ; i++){
             //置第一个点为当前点
             if(i == 0){
                 fractions[i] = 1f;
-                mRectFs[i] = new RectF(0 , 0 , pointRight ,  mHeight / 4);
+                mRectFs[i] = new RectF(0 , 0 , pointRight ,  mHeight);
             } else {
                 fractions[i] = 0f;
-                mRectFs[i] = new RectF( pointRight - mPointDiameter, 0 , pointRight , mHeight / 4);
+                mRectFs[i] = new RectF( pointRight - mPointDiameter, 0 , pointRight , mHeight);
             }
             mPointPaths[i] = new Path();
             pointRight = pointRight + mPointWidth;
@@ -121,7 +176,6 @@ public class IndicatorView extends BasePaintView implements ViewPager.OnPageChan
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mWidth = w;
         mHeight = h;
         initPointState();
         requestLayout();
